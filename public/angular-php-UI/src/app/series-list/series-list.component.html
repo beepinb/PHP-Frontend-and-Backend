@@ -1,0 +1,17 @@
+<div class="input-group">
+    <div class="form-outline">
+      <input type="search" id="search" class="form-control" placeholder="Search" [(ngModel)]="searchTerm"  />
+    </div>
+    <button type="button" class="btn btn-primary">Search
+    </button>
+  </div>
+<h3>List of Series I have watched:</h3>
+
+
+
+<ul>
+    <li *ngFor="let movie of series | filter: searchTerm">
+        <a routerLink="/series/{{movie._id}}">{{movie.title}}</a> &nbsp; &nbsp;<br><br>
+    </li>
+</ul>
+ 

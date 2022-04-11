@@ -1,0 +1,27 @@
+<h3>One Cast Detail</h3>
+
+Name:  {{cast.name}} <br>
+
+Age: {{cast.age}}
+<br>
+
+<button class="btn btn-danger"  (click)="deleteCast()">Delete</button> &nbsp;
+<button class="btn btn-primary"  (click)="editFlag()">Edit</button> 
+<br><br>
+<form *ngIf="flag" (ngSubmit)="editCast()">
+    <div>
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" [(ngModel)]=cast.name />
+      </div>
+    
+      <div>
+        <label for="age">Age</label>
+        <input type="text" id="age" name="age" [(ngModel)]=cast.age/>
+      </div>
+    
+      <div>
+          <button class="btn btn-primary">Cancel</button> &nbsp;
+        <input type="submit" value="Add" class="btn btn-info" >
+    </div>
+
+</form>

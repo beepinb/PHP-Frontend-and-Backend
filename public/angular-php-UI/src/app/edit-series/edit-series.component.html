@@ -1,0 +1,17 @@
+<h2>Edit Series</h2>
+<form #editSeriesForm="ngForm" (ngSubmit)="edit(editSeriesForm)">
+  <div>
+    <label for="title">Series Title</label>
+    <input type="text" id="title" name="title" [(ngModel)]=series.title />
+  </div>
+
+  <div>
+    <label for="year">Year Released on</label>
+    <input type="text" id="year" name="year" [(ngModel)]=series.year/>
+  </div>
+
+  <div>
+      <button class="btn btn-primary">Cancel</button> &nbsp;
+    <input type="submit" value="Edit" class="btn btn-info" >
+</div>
+</form>

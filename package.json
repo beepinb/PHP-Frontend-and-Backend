@@ -1,0 +1,26 @@
+{
+  "name": "personal-hobby-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "startBackend": "npm start",
+    "startFrontEnd": "cd ./public/angular-php-UI && npm start",
+    "startBoth": "npm-run-all  --parallel startBackend startFrontEnd",
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Express",
+    "Node",
+    "mongoose"
+  ],
+  "author": "Bipin Bista",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.9",
+    "npm-run-all": "^4.1.5"
+  }
+}

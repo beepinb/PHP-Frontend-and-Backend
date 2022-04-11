@@ -1,0 +1,46 @@
+<h2>Cast Details</h2>
+<h3><button class="btn btn-success"  (click)="editFlag()">Add Cast</button></h3>
+<h3>List of Cast : </h3> 
+<div class="container">
+    <div class="row">
+      <div class="col-sm">
+<span>
+    <ol>
+        <li *ngFor="let cast of casts">
+           
+           <h5>Name: {{cast.name}}  <button class="btn btn-primary" routerLink="{{cast._id}}">View Detail</button>  &nbsp; <button class="btn btn-danger" (click)="deleteCast(cast._id)">Delete</button></h5>
+           <ul>
+            <li>
+               <h5> Age: {{cast.age}}</h5>
+            </li>
+        </ul>
+        </li>
+    </ol>
+
+    </span>
+    </div>
+
+          <div class="col-sm">
+           
+            <form *ngIf="flag" #addCastForm="ngForm" (ngSubmit)="addCast(addCastForm)">
+                <div>
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" ngModel  />
+                  </div>
+                
+                  <div>
+                    <label for="age">Age</label>
+                    <input type="text" id="age" name="age" ngModel />
+                  </div>
+                
+                  <div>
+                      <button class="btn btn-primary" (click)="editFlag()">Cancel</button> &nbsp;
+                    <input type="submit" value="Add" class="btn btn-info" >
+                </div>
+            
+            </form>
+
+
+          </div>
+        </div>
+      </div>
