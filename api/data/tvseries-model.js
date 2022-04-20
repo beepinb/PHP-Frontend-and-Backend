@@ -23,4 +23,4 @@ const tvSeries=mongoose.Schema({
     cast:[actor]
 });
 
-mongoose.model(process.env.SERIES_MODEL,tvSeries,process.env.DB_NAME);
+mongoose.model(process.env.SERIES_MODEL,tvSeries,process.env.TVSERIES_COLLECTION);

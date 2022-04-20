@@ -7,7 +7,7 @@
     "startBackend": "npm start",
     "startFrontEnd": "cd ./public/angular-php-UI && npm start",
     "startBoth": "npm-run-all  --parallel startBackend startFrontEnd",
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -18,6 +18,7 @@
   "author": "Bipin Bista",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "mongoose": "^6.2.9",

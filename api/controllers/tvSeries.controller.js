@@ -19,11 +19,11 @@ const _updateOne = function (req, res, seriesUpdateCallback) {
     Series.findById(seriesId).exec(function (err, series) {
         console.log("Found Series: ", series.title);
         if (err) {
-            response.status = 500;
+            response.status = process.env.INTERNAL_ERROR_CODE;
             response.message = err;
         } else if (!series) {
             console.log("Series with given Id not found");
-            response.status = 404;
+            response.status = process.env.NOT_FOUND_STATUS;
             response.message = { message: "There is no Series with given id" };
         }
         seriesUpdateCallback(req, res, series);
@@ -36,35 +36,54 @@ const _updateOne = function (req, res, seriesUpdateCallback) {
 module.exports.getOne = function (req, res) {
     const seriesId = req.params.seriesId;
     let valid = mongoose.isValidObjectId(seriesId);
+    const response = { status: process.env.CREATION_STATUS_CODE, message: {} };
     if (valid) {
-        Series.findById(seriesId).exec(function (err, series) {
-            const response = { status: 200, message: {} };
-            if (err) {
-                response.status = 500;
-                response.message = err;
-            } else {
-                if (series) {
-                    console.log("Series Found");
-                    response.status = 200;
-                    response.message = series;
-                } else {
-                    console.log("Series is null");
-                    response.status = 404;
-                    response.message = { message: "There is no Series with given id" };
-                }
-            }
-            res.status(response.status).json(response.message);
-        })
+        // Series.findById(seriesId).exec(function (err, series) {
+        //     const response = { status: process.env.CREATION_STATUS_CODE, message: {} };
+        //     if (err) {
+        //         response.status = 500;
+        //         response.message = err;
+        //     } else {
+        //         if (series) {
+        //             console.log("Series Found");
+        //             response.status = process.env.CREATION_STATUS_CODE;
+        //             response.message = series;
+        //         } else {
+        //             console.log("Series is null");
+        //             response.status = 404;
+        //             response.message = { message: "There is no Series with given id" };
+        //         }
+        //     }
+        //     res.status(response.status).json(response.message);
+        // })
+        Series.findById(seriesId)
+            .then((series) => _onSucessfullFindOrNull(series, response))
+            .catch((err) => _onErrorHandler(err, response))
+            .finally(() => _sendResponse(res, response));
     } else {
         console.log("Invalid Series Id");
         res.status(404).json({ message: "Invalid Series Id" });
     }
 }
 
+_onSucessfullFindOrNull = function (series, response) {
+    if (series) {
+        console.log("Series Found");
+        response.status = process.env.OK_STATUS;
+        response.message = series;
+    }
+    else {
+        console.log("Series not found");
+        response.status = process.env.NOT_FOUND_STATUS;
+        response.message = { message: "There is no Series with given Id" };
+    }
+}
+
+
 module.exports.getAllSeries = function (req, res) {
     console.log("Inside Series Controller");
     const response = {
-        status: 200,
+        status: process.env.CREATION_STATUS_CODE,
         message: {}
     };
     let offset = 0;
@@ -86,49 +105,51 @@ module.exports.getAllSeries = function (req, res) {
         response.status = 400;
         response.message = { message: "count must be less than 10" };
     }
-    if (response.status !== 200) {
+    if (response.status !== process.env.CREATION_STATUS_CODE) {
         res.status(response.status).json(response.message);
     } else {
-        Series.find().skip(offset).limit(count).exec(function (err, series) {
-            if (err) {
-                console.log("Error reading Series");
-                response.status = 500;
-                response.message = err;
-            } else {
-                console.log("Tv Series Found");
-                response.status = 200;
-                response.message = series;
-            }
-            res.status(response.status).json(response.message);
-        });
+        Series.find().skip(offset).limit(count).exec()
+            .then((series) => _onSucessfullSeriesFound(series, response))
+            .catch((err) => _onErrorHandler(err, response))
+            .finally(() => _sendResponse(res, response))
     }
+}
+
+_onSucessfullSeriesFound = function (series, response) {
+    console.log("List of TvSeries Found");
+    response.status = process.env.OK_STATUS;
+    response.message = series;
 }
 
 module.exports.addOne = function (req, res) {
     console.log("Inside addone function of tvseries controller");
-    console.log("Request Body :",req.body);
+    console.log("Request Body :", req.body);
     let response = {
-        status: 200,
+        status: process.env.CREATION_STATUS_CODE,
         message: {}
     };
     const newSeries = {
         title: req.body.title, year: req.body.year, cast: req.body.cast
     };
 
-    Series.create(newSeries, function (err, series) {
-        if (err) {
-            console.log("Error adding new series");
-            response.status = 404;
-            response.message = err;
-        } else {
-            console.log("New series added");
-            response.status = 201;
-            response.message = series;
-        }
-        res.status(response.status).json(response.message);
-    });
+    Series.create(newSeries)
+        .then((series) => _onSucessfullSeriesCreation(series, response))
+        .catch((err) => _onErrorHandler(err, response))
+        .finally(() => _sendResponse(res, response));
 }
-
+_onSucessfullSeriesCreation = function (series, response) {
+    console.log("New series added");
+    response.status = 201;
+    response.message = series;
+}
+_onErrorHandler = function (err, response) {
+    // console.log("Error adding new series");
+    response.status = process.env.INTERNAL_ERROR_CODE;
+    response.message = err;
+}
+_sendResponse = function (res, response) {
+    res.status(response.status).json(response.message)
+}
 
 module.exports.updateOne = function (req, res) {
     console.log("Inside update one of tvSeries controller");
@@ -139,7 +160,7 @@ module.exports.updateOne = function (req, res) {
 
         series.save(function (err, updatedSeries) {
             if (err) {
-                response.status = 500;
+                response.status = process.env.INTERNAL_ERROR_CODE;
                 response.message = err;
                 res.status(response.status).json(response.message);
             }
@@ -154,23 +175,28 @@ module.exports.deleteOne = function (req, res) {
     console.log("Inside deleteOne of Series Controller");
     const seriesId = req.params.seriesId;
 
-    Series.findByIdAndDelete(seriesId).exec(function (err, deletedSeries) {
-        const response = { status: 204, message: deletedSeries };
-        if (err) {
-            console.log("Error finding Series");
-            response.status = 500;
-            response.message = err;
-        } else if (!deletedSeries) {
-            console.log("Series id not found");
-            response.status = 404;
-            response.message = {
-                "message": "Series ID not found"
-            };
-        }
-        if(response.status==204){
-            console.log("Series Deleted Successfully");
-        }
-        res.status(response.status).json(response.message);
-    });
+    const response = { status: process.env.DELETE_SUCCESS_STATUS_CODE, message: {} };
+    Series.findByIdAndDelete(seriesId)
+        .then((deletedSeries) => _onSucessfullDeletionOrNull(deletedSeries, response))
+        .catch((err) => _onErrorDeletion(err, response, deletedSeries))
+        .finally(() => _sendResponse(res, response));
+}
 
+_onSucessfullDeletionOrNull = function (deletedSeries, response) {
+    if (!deletedSeries) {
+        console.log("Series id not found");
+        response.status = process.env.NOT_FOUND_STATUS;
+        response.message = { "message": "Series ID not found" };
+    } else {
+        console.log("Series Deleted Successfully");
+        response.status = process.env.DELETE_SUCCESS_STATUS_CODE;
+        response.message = deletedSeries;
+    }
+}
+_onErrorDeletion = function (err, response) {
+    if (err) {
+        console.log("Error finding Series");
+        response.status = process.env.INTERNAL_ERROR_CODE;
+        response.message = err;
+    }
 }

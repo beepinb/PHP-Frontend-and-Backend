@@ -1,5 +1,6 @@
 const mongoose=require("mongoose");
 require("./tvseries-model");
+require("./users-model");
 mongoose.connect(process.env.DB_URL);
 
 mongoose.connection.on("connected",function(){
