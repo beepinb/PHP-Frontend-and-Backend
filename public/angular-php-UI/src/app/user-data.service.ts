@@ -18,7 +18,8 @@ export class UserDataService {
     return this.http.post<Credentials>(url,userData);
   }
   public login(userData:any):Observable<LoginToken>{
-    const url:string=environment.REST_API_BASE+environment.REST_API_LOGIN_USER;
+    console.log("Hello");
+    const url:string=environment.REST_API_BASE+environment.REST_API_REGISTER_UESR+environment.REST_API_LOGIN_USER;
     return this.http.post<LoginToken>(url,userData);
   }
 }

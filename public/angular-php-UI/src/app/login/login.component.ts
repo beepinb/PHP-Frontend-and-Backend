@@ -15,11 +15,11 @@ export class Credentials{
   username!:string;
   password!:string;
 
-  public fillFromForm(form:FormGroup|NgForm|any):boolean{
+  public fillFromForm(form:FormGroup|NgForm):boolean{
     this.fullname=form.value.fullname;
     this.username=form.value.username;
     this.password=form.value.password;
-    return form.value.password===form.value;
+    return form.value.password===form.value.repassword;
   }
 }
 @Component({
@@ -51,14 +51,20 @@ export class LoginComponent implements OnInit {
     setTimeout(() => {this.loginForm.setValue(this.credentials);}, 0);
   }
 
-
-
   onSubmit(form:NgForm):void{
     console.log("Form Submitted");
     console.log(form.value);
     let user:Credentials=new Credentials();
     user.fillFromForm(form);
-    
+    this._userService.login(user).subscribe({
+      next:()=>{
+        console.log("Login Called");
+      },
+      error:(err)=>{
+        console.log("Login error",err);
+        
+      }
+    })
     
 
   }

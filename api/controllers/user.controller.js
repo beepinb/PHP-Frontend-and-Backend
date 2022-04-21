@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const jwt=require("jsonwebtoken");
 
 const User = mongoose.model("User");
 
@@ -16,6 +17,37 @@ module.exports.getAll = function (req, res) {
     })
 }
 
+module.exports.login=function(req,res){
+    const response={
+        status:200,
+        message:{}
+    };
+    if(req.body && req.body.username&&req.body.password){
+        User.findOne({username:req.body.username})
+        .then((user)=>this._checkUserPassword(user,req,response))
+        .catch((err)=>this._handleError(err,response))
+        .finally(()=>this._sendResponse(res,response))
+    }
+}
+_checkUserPassword=function(user,req,response){
+    if(!user){
+        console.log("Username not in database");
+        response.status=process.env.UNAUTHORISED_CODE;
+        response.message="Unauthorised";
+    }else{
+        if(bcrypt.compareSync(req.body.password,user.password)){
+            console.log("Login Done");
+            response.status=process.env.OK_STATUS;
+            const token=jwt.sign({fullname:user.name},process.env.JWT_PASSWORD,{expiresIn:3600});
+            response.message={success:true,token:token};
+        }else{
+            console.log("Password Incorrect");
+            response.status=process.env.UNAUTHORISED_CODE;
+            response.message="Unauthorised";
+        }
+    }
+}
+
 module.exports.addOne = function (req, res) {
     console.log("Inside addone function of users controller");
     console.log("Request Body :", req.body);
@@ -23,35 +55,53 @@ module.exports.addOne = function (req, res) {
         status: process.env.CREATION_STATUS_CODE,
         message: {}
     };
-    if (req.body && req.body.password) {
-        const salt = bcrypt.genSaltSync(10);
-        bcrypt.hash(req.body.password, salt, function (err, passwordHash) {
-            if (err) {
-                response.status = process.env.INTERNAL_ERROR_CODE;
-                response.message = err;
-                _sendResponse(res, response);
-            } else {
-                const newUser = {
-                    username: req.body.username,
-                    fullname: req.body.fullname,
-                    password: passwordHash
-                };
-                User.create(newUser)
-                    .then((series) => _onSucessfullSeriesCreation(series, response))
-                    .catch((err) => _onErrorHandler(err, response))
-                    .finally(() => _sendResponse(res, response));
-            }
-        })
+    if (req.body && req.body.username && req.body.password) {
+        bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS), (err, salt) => CheckForErrorCreateHashThenCreateUser(err, salt, response, req, res));
+
+    } else {
+        response.status =process.env.USER_ERROR_MISSING_PARAMS;
+            response.message =process.env.INCORRECT_ADD_USER_PARAMETERS;
+            _sendResponse(res, response)
+    }
+    
+}
+
+CheckForErrorCreateHashThenCreateUser = function (err, salt, response, req, res) {
+    if (err) {
+        response.status = process.env.INTERNAL_ERROR_CODE;
+        response.message = err;
+        _sendResponse(res, response);
+    } else {
+        bcrypt.hash(req.body.password, salt, (err, passwordHash) => CheckForErrorAndCreateUser(err, passwordHash, response, req, res))
     }
 }
 
-_onSucessfullSeriesCreation = function (series, response) {
+CheckForErrorAndCreateUser = function (err, passwordHash, response, req, res) {
+    if (err) {
+        response.status = process.env.INTERNAL_ERROR_CODE;
+        response.message = err;
+        _sendResponse(res, response);
+    } else {
+        const newUser = {
+            username: req.body.username,
+            fullname: req.body.fullname,
+            password: passwordHash
+        };
+        User.create(newUser)
+            .then((series) => _onSucessfullUsersCreation(series, response))
+            .catch((err) => _onErrorHandler(err, response))
+            .finally(() => _sendResponse(res, response));
+    }
+}
+
+
+_onSucessfullUsersCreation = function (series, response) {
     console.log("New user added");
     response.status = 201;
     response.message = series;
 }
 _onErrorHandler = function (err, response) {
-    console.log("Error adding new user");
+    console.log("Error ");
     response.status = process.env.INTERNAL_ERROR_CODE;
     response.message = err;
 }

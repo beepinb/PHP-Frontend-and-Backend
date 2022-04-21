@@ -1,4 +1,9 @@
-
+<div *ngIf="hasSuccess" class="alert alert-success">
+    <p>{{successMessage}}</p>
+</div>
+<div *ngIf="hasError" class="alert alert-danger">
+    <p>{{errorMessage}}</p>
+</div>
 
 <br>
 <form [formGroup]="registrationForm" (ngSubmit)="registerUser(registrationForm)">
@@ -12,11 +17,11 @@
     </div><br>
     <div>
         <label>password: </label>
-        <input type="text" name="password" id="password" placeholder="password" ngModel >
+        <input type="password" name="password" id="password" placeholder="password" ngModel >
     </div><br>
     <div>
         <label>Repeat-Password: </label>
-        <input type="text" name="repassword" id="repassword" placeholder="Repeat Password" ngModel>
+        <input type="password" name="repassword" id="repassword" placeholder="Repeat Password" ngModel>
     </div><br>
     <input type="submit" value="Submit" >
 </form>

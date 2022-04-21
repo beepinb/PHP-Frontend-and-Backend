@@ -15,8 +15,6 @@ export class RegisterUserComponent implements OnInit {
   hasError:boolean=false;
   successMessage:string="";
   hasSuccess:boolean=false;
-  // @ViewChild('registrationForm')
-  // registrationForm!: NgForm;
   #registrationForm!:FormGroup;
   get registrationForm(){return this.#registrationForm;}
 
@@ -34,28 +32,34 @@ export class RegisterUserComponent implements OnInit {
   registerUser(form: FormGroup): void {
     console.log(this.registrationForm.value);
     let newUser:Credentials=new Credentials(); 
-    newUser.fillFromForm(this.registrationForm);
-    // const formData = {
-    //   fullname: this.registrationForm.value.fullname,
-    //   username: this.registrationForm.value.username,
-    //   password: this.registrationForm.value.password,
-    // };
-    this._userService.addUser(newUser).subscribe({
-      next: (user) => {
-        console.log('User Added', user);
-        this.successMessage="User Created";
-        this.hasSuccess=true;
-      },
-      error: (err) => {
-        console.log('Error', err);
-        this.errorMessage="Registration error";
-        this.hasError=true;
-      },
-      complete: () => {
-        console.log('Complete');
-        alert('User created Successfully');
-        this.router.navigate(['series']);
-      },
-    });
+    if(newUser.fillFromForm(this.registrationForm)){
+
+      this._userService.addUser(newUser).subscribe({
+        next: (user) => {
+          console.log('User Added', user);
+          this.successMessage="User Created";
+          this.hasSuccess=true;
+          this.clearForm();
+        },
+        error: (err) => {
+          console.log('Error', err);
+          this.errorMessage="Registration error";
+          this.hasError=true;
+        },
+        complete: () => {
+          console.log('Complete');
+          // alert('User created Successfully');
+          // this.router.navigate(['series']);
+        },
+      });
+    }else{
+      console.log("password not matched");
+      this.errorMessage="Password must match";
+      this.hasError=true;
+      this.hasSuccess=false;
+    }
+  }
+  clearForm():void{
+    this.#registrationForm.reset();
   }
 }
