@@ -70,4 +70,8 @@ export class SeriesDataService {
   seriesGetter():Series{
     return this.series;
   }
+
+
+
+  
 }

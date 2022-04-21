@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  REST_API_BASE:"The URL of the Backend REST API prefix"
+  REST_API_BASE:"The URL of the Backend REST API prefix",
+  REST_API_REGISTER_UESR: "The relative URL to register a new user",
+  REST_API_LOGIN_USER: "The relative URL to login a user",
+  TOKEN_STORAGE_KEY:"The name of the key used by the token in the browser localstorage"
 };
 
 /*

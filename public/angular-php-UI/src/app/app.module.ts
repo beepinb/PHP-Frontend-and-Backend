@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import {HttpClientModule} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 import { AppComponent } from './app.component';
@@ -17,6 +18,8 @@ import { AddSeriesComponent } from './add-series/add-series.component';
 import { EditSeriesComponent } from './edit-series/edit-series.component';
 import { CastDetailsComponent } from './cast-details/cast-details.component';
 import { CastDetailComponent } from './cast-detail/cast-detail.component';
+import { RegisterUserComponent } from './register-user/register-user.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -29,13 +32,16 @@ import { CastDetailComponent } from './cast-detail/cast-detail.component';
     AddSeriesComponent,
     EditSeriesComponent,
     CastDetailsComponent,
-    CastDetailComponent
+    CastDetailComponent,
+    RegisterUserComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
     Ng2SearchPipeModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([
       {
         path:"",
@@ -52,6 +58,14 @@ import { CastDetailComponent } from './cast-detail/cast-detail.component';
       {
         path:"register",
         component:AddSeriesComponent
+      },
+      {
+        path:"registerUser",
+        component:RegisterUserComponent
+      },
+      {
+        path:"login",
+        component:LoginComponent
       },
       {
         path:"edit/:seriesId",
