@@ -5,6 +5,7 @@ import {HttpClientModule} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ReactiveFormsModule } from '@angular/forms';
+import { JwtHelperService, JWT_OPTIONS } from '@auth0/angular-jwt';
 
 
 import { AppComponent } from './app.component';
@@ -20,6 +21,7 @@ import { CastDetailsComponent } from './cast-details/cast-details.component';
 import { CastDetailComponent } from './cast-detail/cast-detail.component';
 import { RegisterUserComponent } from './register-user/register-user.component';
 import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { LoginComponent } from './login/login.component';
     CastDetailsComponent,
     CastDetailComponent,
     RegisterUserComponent,
-    LoginComponent
+    LoginComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -68,6 +71,10 @@ import { LoginComponent } from './login/login.component';
         component:LoginComponent
       },
       {
+        path:"profile",
+        component:ProfileComponent
+      },
+      {
         path:"edit/:seriesId",
         component:EditSeriesComponent
       },
@@ -87,7 +94,7 @@ import { LoginComponent } from './login/login.component';
     ])
 
   ],
-  providers: [],
+  providers: [{provide:JWT_OPTIONS,useValue:JWT_OPTIONS},JwtHelperService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -44,6 +44,8 @@ export class SeriesDataService {
 
   public getAllCast(seriesId:string):Observable<Cast[]>{
     const url:string=this.baseUrl+"tvseries/"+seriesId+"/cast";
+    console.log(this.http.get<Cast[]>(url));
+    
     return this.http.get<Cast[]>(url);
   }
 

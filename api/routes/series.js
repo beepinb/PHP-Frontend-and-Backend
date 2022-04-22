@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const tvSeriesController = require("../controllers/tvSeries.controller");
 const actorController = require("../controllers/actor.controller");
+const usersController=require("../controllers/user.controller");
 
 
 router.route("")

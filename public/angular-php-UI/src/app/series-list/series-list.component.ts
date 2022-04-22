@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../authentication.service';
 import { SeriesDataService } from '../series-data.service';
 
 export class Series{
   _id!:string;
   title!:string;
-  year!:number;
+  year!:Date;
   cast!:[{name:"",age:"",_id:""}];
 
 }
@@ -20,10 +21,13 @@ export class Cast{
   styleUrls: ['./series-list.component.css']
 })
 export class SeriesListComponent implements OnInit {
+
+  get isLoggedIn(){return this._authService.isLoggedIn}
+
   series!:Series[];
   searchTerm!: string;
 
-  constructor(private seriesService:SeriesDataService) { }
+  constructor(private seriesService:SeriesDataService,private _authService:AuthenticationService) { }
 
   ngOnInit(): void {
 
@@ -35,7 +39,7 @@ export class SeriesListComponent implements OnInit {
           this.series=series;
         },
         error:err=>{
-          console.log("Service error",err);
+          console.log("Service errorr",err);
         },
         complete:()=>{
           console.log("Complete");

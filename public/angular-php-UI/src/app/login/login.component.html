@@ -1,5 +1,12 @@
-<form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" style="display: inline; float: right;">
-    <input type="text" placeholder="Username" name="username" ngModel />
-    <input type="text" placeholder="Password" name="password" ngModel />
-    <button type="submit">Login</button>
-</form>
+<div *ngIf="!isLoggedIn" style="display: inline; float: right;">
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" >
+        <input type="text" placeholder="Username" name="username" ngModel />
+        <input type="password" placeholder="Password" name="password" ngModel />
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<div *ngIf="isLoggedIn" style="display: inline; float: right;">
+    Welcome {{name}}
+    <button (click)="logout()">Logout</button>
+</div>

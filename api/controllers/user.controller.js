@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt=require("jsonwebtoken");
+const util=require("util");
 
 const User = mongoose.model("User");
 
@@ -38,7 +39,7 @@ _checkUserPassword=function(user,req,response){
         if(bcrypt.compareSync(req.body.password,user.password)){
             console.log("Login Done");
             response.status=process.env.OK_STATUS;
-            const token=jwt.sign({fullname:user.name},process.env.JWT_PASSWORD,{expiresIn:3600});
+            const token=jwt.sign({fullname:user.fullname},process.env.JWT_PASSWORD,{expiresIn:3600});
             response.message={success:true,token:token};
         }else{
             console.log("Password Incorrect");
@@ -107,4 +108,25 @@ _onErrorHandler = function (err, response) {
 }
 _sendResponse = function (res, response) {
     res.status(response.status).json(response.message)
+}
+
+module.exports.authenticate=function(req,res,next){
+    const response={
+        status:403,
+        message:{message:"No Token Provided"}
+    };
+    const headerExists=req.headers.authorization;
+    if(headerExists){
+        const token=req.headers.authorization.split("")[1];
+        const jwtVerifyPromise=util.promisify(jwt.verify,{contex:jwt});
+        jwtVerifyPromise(token,process.env.JWT_PASSWORD)
+        .then(()=>next())
+        .catch((err)=>this._invalidAuthorizationToken(err,res,response));
+    }
+}
+_invalidAuthorizationToken=function(error,res,response){
+    console.log(error);
+    response.status=process.env.UNAUTHORISED_CODE;
+    response.message={message:"Unauthorized"};
+    this._sendResponse(res,response);
 }

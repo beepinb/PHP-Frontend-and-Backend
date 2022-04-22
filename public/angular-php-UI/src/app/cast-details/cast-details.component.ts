@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { SeriesDataService } from '../series-data.service';
 import { Cast, Series } from '../series-list/series-list.component';
 
@@ -15,7 +16,7 @@ export class CastDetailsComponent implements OnInit {
   @ViewChild('addCastForm')
   addCastForm!:NgForm;
 
-  casts!:Cast[];
+  casts:Cast[]=[];
   flag:boolean=false;
 
   constructor(private seriesService: SeriesDataService,
@@ -24,6 +25,8 @@ export class CastDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.showAllCast();
+    console.log(this.casts);
+    
   }
   editFlag():void{
     if(!this.flag){

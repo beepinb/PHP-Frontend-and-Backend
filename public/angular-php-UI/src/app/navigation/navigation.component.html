@@ -1,7 +1,8 @@
 <nav>
     <button class="btn btn-success" routerLink="">Home</button> &nbsp;
     <button class="btn btn-success" routerLink="series">Series List</button>&nbsp;
-    <button class="btn btn-success" routerLink="register">Add Series</button>&nbsp;
-    <button class="btn btn-success" routerLink="registerUser">Register User</button>&nbsp;
-    <app-login></app-login>
+    <button *ngIf="isLoggedIn" class="btn btn-success" routerLink="register">Add Series</button>&nbsp;
+    <button *ngIf="!isLoggedIn" class="btn btn-success" routerLink="registerUser">Register User</button>&nbsp;
+    <button *ngIf="isLoggedIn" class="btn btn-success" routerLink="/profile">Profile</button>&nbsp;
+    <app-login class="right"></app-login>
 </nav>

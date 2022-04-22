@@ -12,7 +12,7 @@ const _updateOne = function (req, res, seriesUpdateCallback) {
     let valid = mongoose.isValidObjectId(seriesId);
     if (!valid) {
         console.log("invalid Id");
-        response.status = 400;
+        response.status = process.env.USER_ERROR_MISSING_PARAMS;
         response.message = { message: "Invalid seriesId" }
         return res.status(response.status).json(response.message)
     }
@@ -38,24 +38,6 @@ module.exports.getOne = function (req, res) {
     let valid = mongoose.isValidObjectId(seriesId);
     const response = { status: process.env.CREATION_STATUS_CODE, message: {} };
     if (valid) {
-        // Series.findById(seriesId).exec(function (err, series) {
-        //     const response = { status: process.env.CREATION_STATUS_CODE, message: {} };
-        //     if (err) {
-        //         response.status = 500;
-        //         response.message = err;
-        //     } else {
-        //         if (series) {
-        //             console.log("Series Found");
-        //             response.status = process.env.CREATION_STATUS_CODE;
-        //             response.message = series;
-        //         } else {
-        //             console.log("Series is null");
-        //             response.status = 404;
-        //             response.message = { message: "There is no Series with given id" };
-        //         }
-        //     }
-        //     res.status(response.status).json(response.message);
-        // })
         Series.findById(seriesId)
             .then((series) => _onSucessfullFindOrNull(series, response))
             .catch((err) => _onErrorHandler(err, response))
@@ -87,8 +69,8 @@ module.exports.getAllSeries = function (req, res) {
         message: {}
     };
     let offset = 0;
-    let count = 20;
-    const maxCount = 20;
+    let count = 5;
+    const maxCount = 8;
     if (req.query && req.query.count) {
         count = parseInt(req.query.count, 10);
     }
