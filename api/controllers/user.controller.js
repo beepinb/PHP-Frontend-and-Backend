@@ -117,7 +117,8 @@ module.exports.authenticate=function(req,res,next){
     };
     const headerExists=req.headers.authorization;
     if(headerExists){
-        const token=req.headers.authorization.split("")[1];
+        const token=req.headers.authorization.split(" ")[1];
+        // console.log("token",token);
         const jwtVerifyPromise=util.promisify(jwt.verify,{contex:jwt});
         jwtVerifyPromise(token,process.env.JWT_PASSWORD)
         .then(()=>next())
@@ -125,7 +126,7 @@ module.exports.authenticate=function(req,res,next){
     }
 }
 _invalidAuthorizationToken=function(error,res,response){
-    console.log(error);
+    // console.log("Error ",error);
     response.status=process.env.UNAUTHORISED_CODE;
     response.message={message:"Unauthorized"};
     this._sendResponse(res,response);

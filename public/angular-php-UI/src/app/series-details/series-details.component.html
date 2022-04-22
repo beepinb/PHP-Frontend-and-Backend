@@ -1,7 +1,7 @@
 <span *ngIf="series" >
     <h1>Title-{{series.title}}</h1>
     <h3>Year : {{series.year|date: 'MMMM d, y'}} </h3>
-    <h3>Cast :   <button class="btn btn-info" routerLink="/series/{{series._id}}/cast">Show All Casts</button> &nbsp; <button class="btn btn-info" routerLink="/series/{{series._id}}/cast" >Add Casts</button></h3>
+    <h3>Cast :   <button class="btn btn-info" routerLink="/series/{{series._id}}/cast">Show All Casts</button> &nbsp; <button *ngIf="isLogin" class="btn btn-info" routerLink="/series/{{series._id}}/cast" >Add Casts</button></h3>
     <ul>
         <li *ngFor="let cast of series.cast">
             {{cast.name}} &nbsp; &nbsp; &nbsp; Age:-  {{cast.age}}
@@ -9,6 +9,9 @@
     </ul>
 
     <button class="btn btn-primary" (click)="backToList()">Back to List</button>&nbsp;
-    <button class="btn btn-info" (click)="editSeries()">Edit this Series</button>&nbsp;
-    <button class="btn btn-danger" (click)="deleteSeries()">Delete</button>
+    <div *ngIf="isLogin">
+
+        <button class="btn btn-info" (click)="editSeries()">Edit this Series</button>&nbsp;
+        <button class="btn btn-danger" (click)="deleteSeries()">Delete</button>
+    </div>
 </span>

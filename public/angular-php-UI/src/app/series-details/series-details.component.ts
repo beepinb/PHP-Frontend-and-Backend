@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationService } from '../authentication.service';
 import { SeriesDataService } from '../series-data.service';
 import { Series } from '../series-list/series-list.component';
 
@@ -9,22 +10,22 @@ import { Series } from '../series-list/series-list.component';
   styleUrls: ['./series-details.component.css'],
 })
 export class SeriesDetailsComponent implements OnInit {
-  series!: Series;
-  // series.cast!:Series.cast
 
-  // @Output()
-  // editEvent:EventEmitter<Series>=new EventEmitter<Series>();
+  isLogin!:boolean;
+  series!: Series;
 
 
 
   constructor(
     private seriesService: SeriesDataService,
     private route: ActivatedRoute,
-    private router:Router
+    private router:Router,
+    private authenticateService:AuthenticationService
   ) {}
 
   ngOnInit(): void {
     this.getSeries();
+    this.isLogin=this.authenticateService.isLoggedIn;
   }
 
   getSeries(): void {
